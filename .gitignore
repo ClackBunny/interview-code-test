@@ -66,5 +66,8 @@ shadow/
 run.bat
 run.sh
 
-# ========== Optional: VS Code (if used) ==========
+# ========== VS Code ==========
 .vscode/
+
+# ========== Database ==========
+*.db

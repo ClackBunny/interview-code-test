@@ -10,5 +10,5 @@ class TaskService(private val repository: TaskRepository) {
     fun getTasksByDueDate(date: String) = repository.getByDueDate(date)
     fun addTask(task: Task) = repository.add(task)
     fun updateTask(id: Int, task: Task) = repository.update(id, task)
-    fun deleteTask(id: Int) = repository.delete(id)
+    fun deleteTask(id: Int) = repository.softDelete(id)
 }

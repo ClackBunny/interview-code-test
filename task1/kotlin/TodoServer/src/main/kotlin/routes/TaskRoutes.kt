@@ -38,7 +38,7 @@ fun Route.registerTaskRoutes() {
             val id = call.parameters["id"]?.toIntOrNull()
             val task = call.receive<Task>()
             if (id != null && service.updateTask(id, task))
-                call.respond(HttpStatusCode.OK)
+                call.respond(HttpStatusCode.OK, true)
             else
                 call.respond(HttpStatusCode.NotFound)
         }
