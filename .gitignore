@@ -15,7 +15,6 @@
 *.war
 *.ear
 *.kjsm
-*.log
 
 # ========== Gradle ==========
 .gradle/
