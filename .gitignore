@@ -1,0 +1,69 @@
+# ========== IntelliJ IDEA ==========
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# ========== Build Output ==========
+/build/
+/out/
+/bin/
+
+# ========== Kotlin ==========
+*.class
+*.jar
+*.war
+*.ear
+*.kjsm
+
+# ========== Gradle ==========
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+build/
+**/build/
+
+# Gradle Wrapper logs
+gradle-app.setting
+gradle-app.properties
+
+# ========== OS-Specific ==========
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Linux
+*~
+
+# ========== Logs & Temp ==========
+*.log
+*.tmp
+logs/
+tmp/
+
+# ========== Environment & Tooling ==========
+.env
+*.swp
+*.swo
+
+# ========== JetBrains / Run Configs ==========
+.idea/runConfigurations/
+
+# ========== Distribution Output ==========
+dist/
+distributions/
+release/
+shadow/
+
+# ========== Packaging ==========
+*.zip
+*.tar.gz
+
+# ========== Custom Scripts ==========
+run.bat
+run.sh
+
+# ========== Optional: VS Code (if used) ==========
+.vscode/
