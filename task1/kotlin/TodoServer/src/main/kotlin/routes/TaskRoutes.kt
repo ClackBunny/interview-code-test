@@ -3,8 +3,8 @@ package com.hacker.routes
 import com.hacker.models.Task
 import com.hacker.repository.TaskRepository
 import com.hacker.services.TaskService
+import com.hacker.utils.validator.receiveAndValidate
 import io.ktor.http.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
@@ -30,13 +30,13 @@ fun Route.registerTaskRoutes() {
         }
 
         post {
-            val task = call.receive<Task>()
+            val task = call.receiveAndValidate<Task>()
             call.respond(HttpStatusCode.Created, service.addTask(task))
         }
 
         put("/{id}") {
             val id = call.parameters["id"]?.toIntOrNull()
-            val task = call.receive<Task>()
+            val task = call.receiveAndValidate<Task>()
             if (id != null && service.updateTask(id, task))
                 call.respond(HttpStatusCode.OK, true)
             else

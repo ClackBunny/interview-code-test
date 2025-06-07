@@ -1,5 +1,6 @@
 package com.hacker
 
+import com.hacker.utils.validator.ValidationException
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.calllogging.*
@@ -19,6 +20,10 @@ fun Application.configureMonitoring() {
         exception<IllegalArgumentException> { call, cause ->
             logger.warn("Bad request: ${cause.message}")
             call.respond(HttpStatusCode.BadRequest, cause.message ?: "Invalid input")
+        }
+
+        exception<ValidationException> { call, cause ->
+            call.respond(HttpStatusCode.BadRequest, mapOf("errors" to cause.errors))
         }
     }
     install(CallLogging) {

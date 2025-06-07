@@ -53,4 +53,12 @@ dependencies {
 
     // SQLite JDBC 驱动
     implementation("org.xerial:sqlite-jdbc:$sqlite_version")
+
+    // validator
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
+    implementation("org.hibernate.validator:hibernate-validator:8.0.1.Final")
+    implementation("jakarta.validation:jakarta.validation-api:3.0.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.3")
+    implementation("org.glassfish:jakarta.el:4.0.2")
+
 }
