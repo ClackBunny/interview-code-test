@@ -1,5 +1,6 @@
 package com.hacker
 
+import com.hacker.db.DatabaseFactory
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {
@@ -7,6 +8,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    DatabaseFactory.init()
     configureSerialization()
     configureMonitoring()
     configureHTTP()
