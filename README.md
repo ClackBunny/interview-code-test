@@ -42,3 +42,10 @@ One city can only appear once in the output.
 
 # Where to ask questions for the tasks?
 You can send email to kennethzhang@outlook.com
+
+# Documents
+
+[task1-kotlin](./task1/kotlin/TodoServer/README.md) is a guide for task1
+
+[task2](./task2/README.md) is a guide for task2
+
