@@ -1,4 +1,4 @@
-package com.hacker
+package com.hacker.config
 
 import com.hacker.auth.JwtConfig
 import com.hacker.models.UsersTable

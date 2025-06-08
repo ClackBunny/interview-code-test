@@ -1,5 +1,6 @@
 package com.hacker
 
+import com.hacker.config.*
 import com.hacker.db.DatabaseFactory
 import com.hacker.services.AuthService
 import io.ktor.server.application.*
@@ -90,6 +91,7 @@ fun Application.module() {
     environment.log.info("Loaded port = ${environment.config.propertyOrNull("ktor.deployment.port")?.getString()}")
     DatabaseFactory.init()
     AuthService.initAdminUser()
+    configureOpenApi()
     configureSerialization()
     configureMonitoring()
     configureHTTP()

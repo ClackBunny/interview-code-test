@@ -1,4 +1,4 @@
-package com.hacker
+package com.hacker.config
 
 import com.fasterxml.jackson.core.util.DefaultIndenter
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter

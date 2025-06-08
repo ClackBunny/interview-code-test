@@ -1,4 +1,4 @@
-package com.hacker
+package com.hacker.config
 
 import com.hacker.utils.validator.ValidationException
 import io.ktor.http.*

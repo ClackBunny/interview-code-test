@@ -5,11 +5,13 @@ val kotlin_version: String by project
 val logback_version: String by project
 val exposed_version: String by project
 val sqlite_version: String by project
+val ktor_version:String by project
 
 plugins {
     kotlin("jvm") version "2.1.10"
     id("io.ktor.plugin") version "3.1.3"
     id("com.gradleup.shadow") version "8.3.6"
+    id("org.openapi.generator") version "6.6.0"
 }
 
 group = "com.hacker"
@@ -66,6 +68,15 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.3")
     implementation("org.glassfish:jakarta.el:4.0.2")
 
+    // Ktor 文档生成核心
+    implementation("io.ktor:ktor-server-openapi:$ktor_version")
+
+    // Swagger 注解支持
+    implementation("io.swagger.core.v3:swagger-annotations:2.2.19")
+
+    implementation("io.github.smiley4:ktor-openapi:5.0.2")
+    // Swagger UI 集成
+    implementation("io.github.smiley4:ktor-swagger-ui:5.0.2")
 }
 
 
