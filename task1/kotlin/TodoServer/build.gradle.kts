@@ -1,11 +1,15 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import java.io.ByteArrayOutputStream
+
 val kotlin_version: String by project
 val logback_version: String by project
-val exposed_version:String by project
-val sqlite_version:String by project
+val exposed_version: String by project
+val sqlite_version: String by project
 
 plugins {
     kotlin("jvm") version "2.1.10"
     id("io.ktor.plugin") version "3.1.3"
+    id("com.gradleup.shadow") version "8.3.6"
 }
 
 group = "com.hacker"
@@ -16,7 +20,7 @@ application {
 }
 
 repositories {
-//    mavenLocal()
+    mavenLocal()
 
     maven { url = uri("https://maven.aliyun.com/repository/public/") }
     maven { url = uri("https://maven.aliyun.com/repository/spring/") }
@@ -26,7 +30,7 @@ repositories {
     maven { url = uri("https://maven.aliyun.com/repository/grails-core/") }
     maven { url = uri("https://maven.aliyun.com/repository/apache-snapshots/") }
 
-//    mavenCentral()
+    mavenCentral()
 }
 
 
@@ -61,4 +65,116 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.3")
     implementation("org.glassfish:jakarta.el:4.0.2")
 
+}
+
+
+// ================= 提取公共路径 =================
+val jlinkDir = layout.buildDirectory.dir("jlink")
+val jpackageOutput = layout.buildDirectory.dir("jpackage")
+val runtimeModulesFile = layout.buildDirectory.file("runtime-modules.txt")
+
+// ================= 1. 配置 ShadowJar 任务 =================
+tasks.named<ShadowJar>("shadowJar") {
+    archiveClassifier.set("")
+    manifest {
+        attributes["Main-Class"] = "io.ktor.server.netty.EngineMain"
+    }
+
+    // 声明输出以支持增量构建
+    outputs.file(archiveFile)
+}
+
+// ================= 2. 分析依赖模块 =================
+tasks.register("jdepsModules") {
+    group = "build"
+    description = "分析应用程序的模块依赖"
+
+    val shadowJarTask = tasks.named<ShadowJar>("shadowJar").get()
+    dependsOn(shadowJarTask)
+
+    inputs.file(shadowJarTask.archiveFile) // 输入声明
+    outputs.file(runtimeModulesFile)      // 输出声明
+
+    doLast {
+        val jarFile = shadowJarTask.archiveFile.get().asFile
+        val output = ByteArrayOutputStream().use { bos ->
+            project.exec {
+                commandLine("jdeps", "--print-module-deps", "--ignore-missing-deps", jarFile.absolutePath)
+                standardOutput = bos
+            }
+            bos.toString().trim()
+        }
+        runtimeModulesFile.get().asFile.writeText(output)
+    }
+}
+
+// ================= 3. 构建自定义运行时 =================
+tasks.register("jlinkRuntime") {
+    group = "build"
+    description = "创建自定义JRE运行时"
+
+    dependsOn(tasks.named("jdepsModules"))
+
+    inputs.file(runtimeModulesFile)  // 输入声明
+    outputs.dir(jlinkDir)            // 输出声明
+
+    doLast {
+        val modules = runtimeModulesFile.get().asFile.readText()
+        val outputDir = jlinkDir.get().asFile
+
+        // 清理旧运行时
+        if (outputDir.exists()) outputDir.deleteRecursively()
+
+        project.exec {
+            commandLine(
+                "jlink",
+                "--output", outputDir.absolutePath,
+                "--add-modules", modules,
+                "--strip-debug",
+                "--compress", "2",
+                "--no-header-files",
+                "--no-man-pages"
+            )
+        }
+    }
+}
+
+// ================= 4. 打包应用程序 =================
+tasks.register("jpackageInstaller") {
+    group = "distribution"
+    description = "创建应用程序安装包"
+
+    dependsOn(tasks.named("jlinkRuntime"))
+    val shadowJarTask = tasks.named<ShadowJar>("shadowJar").get()
+    dependsOn(shadowJarTask)
+
+    inputs.dir(jlinkDir)                     // 输入声明
+    inputs.file(shadowJarTask.archiveFile)   // 输入声明
+    outputs.dir(jpackageOutput)              // 输出声明
+
+    doLast {
+        project.exec {
+            commandLine(
+                "jpackage",
+                "--input", shadowJarTask.archiveFile.get().asFile.parent,
+                "--main-jar", shadowJarTask.archiveFileName.get(),
+                "--main-class", "io.ktor.server.netty.EngineMain",
+                "--name", "testApp",
+                "--type", "app-image",
+                "--win-console",
+                "--runtime-image", jlinkDir.get().asFile.absolutePath,
+                "--dest", jpackageOutput.get().asFile.absolutePath
+            )
+            isIgnoreExitValue = true
+            standardOutput = System.out
+            errorOutput = System.err
+        }
+    }
+}
+
+// ================= 5. 聚合任务 =================
+tasks.register("packageApp") {
+    group = "build"
+    description = "完整构建流程：JAR → 模块分析 → JRE → 安装包"
+    dependsOn(tasks.named("jpackageInstaller"))
 }
