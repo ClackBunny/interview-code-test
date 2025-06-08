@@ -23,9 +23,9 @@ object AuthService {
     fun initAdminUser() {
         if (!UserRepository.userExists("admin")) {
             UserRepository.createUser("admin", hash("admin"))
-            println("✅ Default admin user created (username: admin, password: admin)")
+            println("Default admin user created (username: admin, password: admin)")
         } else {
-            println("ℹ️ Admin user already exists.")
+            println("Admin user already exists.")
         }
     }
 

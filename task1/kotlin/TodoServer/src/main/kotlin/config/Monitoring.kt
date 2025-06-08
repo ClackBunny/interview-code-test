@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
 
 fun Application.configureMonitoring() {
-    var logger = LoggerFactory.getLogger("TodoServer")
+    val logger = LoggerFactory.getLogger("TodoServer")
     install(StatusPages) {
         exception<Throwable> { call, cause ->
             logger.error("Unhandled exception caught: ${cause.message}", cause)

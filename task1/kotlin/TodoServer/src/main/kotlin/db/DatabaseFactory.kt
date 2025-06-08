@@ -13,8 +13,8 @@ object DatabaseFactory {
         ensureDatabaseDirExists(dbPath)
         Database.connect("jdbc:sqlite:$dbPath", driver = "org.sqlite.JDBC")
         transaction {
-            SchemaUtils.createMissingTablesAndColumns(TaskTable)
-            SchemaUtils.createMissingTablesAndColumns(UsersTable)
+            SchemaUtils.create(TaskTable)
+            SchemaUtils.create(UsersTable)
         }
     }
 
