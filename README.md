@@ -1,7 +1,14 @@
 This is a repository for the interview task.
 Please read carefully for the below task requirements.
 
+# Documents
+
+[task1-kotlin](./task1/kotlin/TodoServer/README.md) is a guide for task1
+
+[task2](./task2/README.md) is a guide for task2
+
 # How to submit your works
+
 1. Fork this repository.
 2. Implement the requirement and put your code to the corresponding folder. for example, the codes for task 1 should put into the task1 folder.
 3. Send the Github link of your repository to the people who contacted you.
@@ -42,10 +49,3 @@ One city can only appear once in the output.
 
 # Where to ask questions for the tasks?
 You can send email to kennethzhang@outlook.com
-
-# Documents
-
-[task1-kotlin](./task1/kotlin/TodoServer/README.md) is a guide for task1
-
-[task2](./task2/README.md) is a guide for task2
-
