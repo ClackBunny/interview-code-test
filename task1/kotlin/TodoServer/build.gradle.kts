@@ -16,12 +16,10 @@ group = "com.hacker"
 version = "0.0.1"
 
 application {
-    mainClass = "io.ktor.server.netty.EngineMain"
+    mainClass = "com.hacker.ApplicationKt"
 }
 
 repositories {
-    mavenLocal()
-
     maven { url = uri("https://maven.aliyun.com/repository/public/") }
     maven { url = uri("https://maven.aliyun.com/repository/spring/") }
     maven { url = uri("https://maven.aliyun.com/repository/google/") }
@@ -47,6 +45,8 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.3")
+    implementation("org.yaml:snakeyaml:2.2")
     implementation("io.ktor:ktor-server-status-pages")
 
     // Exposed ORM
@@ -74,14 +74,27 @@ val jpackageOutput = layout.buildDirectory.dir("jpackage")
 val runtimeModulesFile = layout.buildDirectory.file("runtime-modules.txt")
 
 // ================= 1. 配置 ShadowJar 任务 =================
-tasks.named<ShadowJar>("shadowJar") {
-    archiveClassifier.set("")
-    manifest {
-        attributes["Main-Class"] = "io.ktor.server.netty.EngineMain"
+tasks {
+    // 1. 先确保 jar 任务的 Manifest 是干净的
+    withType<Jar> {
+        manifest {
+            attributes(
+                "Main-Class" to "com.hacker.ApplicationKt" // 显式设置
+            )
+        }
     }
 
-    // 声明输出以支持增量构建
-    outputs.file(archiveFile)
+    // 2. 强制 shadowJar 使用你的配置
+    named<ShadowJar>("shadowJar") {
+        archiveBaseName.set("TodoServer")
+        archiveClassifier.set("")
+        manifest {
+            attributes(
+                "Main-Class" to "com.hacker.ApplicationKt" // 再次确认
+            )
+        }
+        configurations = listOf(project.configurations.runtimeClasspath.get())
+    }
 }
 
 // ================= 2. 分析依赖模块 =================
@@ -153,17 +166,24 @@ tasks.register("jpackageInstaller") {
     outputs.dir(jpackageOutput)              // 输出声明
 
     doLast {
+        // 复制配置文件到输入目录
+        copy {
+            from("application.yaml")
+            into(shadowJarTask.archiveFile.get().asFile.parent)
+        }
+
         project.exec {
             commandLine(
                 "jpackage",
                 "--input", shadowJarTask.archiveFile.get().asFile.parent,
                 "--main-jar", shadowJarTask.archiveFileName.get(),
-                "--main-class", "io.ktor.server.netty.EngineMain",
-                "--name", "testApp",
+                "--main-class", "com.hacker.ApplicationKt", // 必须改为你的主类
+                "--name", "TodoServer",
                 "--type", "app-image",
                 "--win-console",
                 "--runtime-image", jlinkDir.get().asFile.absolutePath,
-                "--dest", jpackageOutput.get().asFile.absolutePath
+                "--dest", jpackageOutput.get().asFile.absolutePath,
+                "--resource-dir", shadowJarTask.archiveFile.get().asFile.parent, // 包含配置文件
             )
             isIgnoreExitValue = true
             standardOutput = System.out
