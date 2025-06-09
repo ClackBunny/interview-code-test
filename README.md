@@ -5,6 +5,8 @@ Please read carefully for the below task requirements.
 
 [task1-kotlin](./task1/kotlin/TodoServer/README.md) is a guide for task1
 
+[task1-nodejs](./task1/nodejs/todoApi/README.md) is a guide for task1
+
 [task2](./task2/README.md) is a guide for task2
 
 # How to submit your works
