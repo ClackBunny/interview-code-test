@@ -4,49 +4,48 @@
 
 ## 功能
 
-> **在项目运行后, 访问 `host:port/swagger` 路由访问swagger, 或者 `/api.json` 获得接口的json格式描述**
+提供一个Todo的后端服务, 提供以下接口
 
-提供一个Todo的后端服务, 接口遵循RESTful接口风格, 包括以下功能
-
-- 根据ID获取任务
-- 根据截止日期查询所有任务
+- 获取任务
+- 根据截止日期获取任务
 - 新增任务
-- 根据ID更新任务
-- 根据ID删除任务
+- 更新任务
+- 删除任务
 
 认证相关
 
 - 登录接口
 - 修改密码接口
 
+> 接口文档, 访问 `host:port/swagger` 路由访问swagger, 或者 `/api.json` 获得接口的json格式描述
+
 ## 构建
 
-To build or run the project, use one of the following tasks:
+这是一些构建命令
 
-| Task                         | Description                                           |
-| ---------------------------- | ----------------------------------------------------- |
-| `./gradlew test`             | Run the tests                                         |
-| `./gradlew build`            | Build everything                                      |
-| try                          | Publish the docker image locally                      |
-| **`run`**                    | **Run the server**                                    |
-| `runDocker`                  | Run using the local docker image                      |
-| **`./gradlew shadowJar`**    | **Build a fatJar with all dependencies included**     |
-| **`./gradlew jlinkRuntime`** | **Create a minimal runtime environment**              |
-| **`./gradlew packageApp`**   | **Package a program that can be run directly (.exe)** |
+| 命令                     | 描述                              |
+| ------------------------ | --------------------------------- |
+| `./gradlew test`         | 运行一个测试                      |
+| `./gradlew build`        | 构建所有的东西                    |
+| `run`                    | 运行服务                          |
+| `runDocker`              | 使用本地的docker 运行项目         |
+| `./gradlew shadowJar`    | 构建一个Jar包, 包括所有运行依赖   |
+| `./gradlew jlinkRuntime` | 创建一个最小的运行环境(自定义jre) |
+| `./gradlew packageApp`   | 打包一个可以直接运行的文件(.exe)  |
 
-### 构建jar包
+#### 构建jar包
 
 运行命令 `./gradlew shadowJar` 会在`build/libs`下创建一个`TodoServer-all.jar`,  可以使用 `java -jar TodoServer-all.jar` 命令进行运行 
 
-### 构建二进制程序
+#### 构建二进制程序
 
 运行命令`./gradlew packageApp` 会在 `build/jpackage` 下创建一个`TodoServer`目录, 目录包含了必要的运行环境和程序, 可以直接点击`.exe` 文件运行
 
 ## 运行
 
-这里有三种运行方式
+这里有三种运行方式, 分别是 `源码运行` ,`Jar包`, `可执行文件(exe)`
 
-### source code
+### 源码运行
 
 > 推荐是相关开发人员使用此方法
 
@@ -64,7 +63,7 @@ git clone git@github.com:ClackBunny/interview-code-test.git
 ./gradlew run
 ```
 
-### Jar
+### Jar包
 
 > 推荐已经有Java环境的, 不想查看源码的人员使用此方法
 
@@ -74,7 +73,7 @@ git clone git@github.com:ClackBunny/interview-code-test.git
 java -jar TodoServer-all.jar
 ```
 
-### exe
+### 可执行文件exe
 
 > 推荐没有环境, 只想运行服务的用户
 
@@ -88,7 +87,6 @@ java -jar TodoServer-all.jar
 如果项目运行成功, 你会看到如下样式的代码
 
 ```
-
 2025-06-08 17:20:15.545 [main] INFO  Application - Loaded port = 8180
 2025-06-08 17:20:15.808 [main] INFO  Exposed - Preparing create tables statements took 15ms
 2025-06-08 17:20:15.821 [main] INFO  Exposed - Executing create tables statements took 12ms

@@ -71,3 +71,6 @@ run.sh
 
 # ========== Database ==========
 *.db
+
+# ========== node ==========
+node_modules/
